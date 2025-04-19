@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>响应式iframe展示</title>
+    <title>中华配货网</title>
     <style>
         * {
             margin: 0;
@@ -13,33 +13,14 @@
         
         body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
+            overflow-x: hidden;
         }
         
         .iframe-container {
             position: relative;
+            width: 100%;
+            height: 100vh; /* 全屏高度 */
             overflow: hidden;
-            padding-top: 56.25%; /* 16:9 宽高比 */
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
         }
         
         .iframe-container iframe {
@@ -49,45 +30,53 @@
             width: 100%;
             height: 100%;
             border: none;
+            background: transparent;
         }
         
-        .description {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-left: 4px solid #4CAF50;
+        /* 可选：添加加载指示器 */
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
         }
         
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            
-            .container {
-                padding: 15px;
-            }
-            
-            h1 {
-                font-size: 24px;
-            }
+        .loader.hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>内容展示</h1>
-        
-        <div class="iframe-container">
-            <iframe
-                src="https://tongxiaojun-peihuo-net.static.hf.space"
-                frameborder="0"
-                allowfullscreen
-            ></iframe>
+    <div class="iframe-container">
+        <!-- 加载指示器 -->
+        <div class="loader" id="loader">
+            <p>加载中...</p>
         </div>
         
-        <div class="description">
-            <p>这是一个响应式iframe展示区域，会自动适应不同设备的屏幕尺寸。在电脑上会显示较大的视图，在手机上会自动调整大小以获得最佳浏览体验。</p>
-        </div>
+        <!-- 内嵌 iframe -->
+        <iframe 
+            src="https://tongxiaojun-peihuo-net.static.hf.space" 
+            frameborder="0"
+            onload="document.getElementById('loader').classList.add('hidden')"
+            allowfullscreen>
+        </iframe>
     </div>
+
+    <script>
+        // 可选：处理 iframe 高度自适应
+        window.addEventListener('message', function(e) {
+            // 如果 iframe 发送了高度信息，可以在这里调整
+            if (e.data && e.data.type === 'iframeHeight') {
+                document.querySelector('.iframe-container').style.height = e.data.height + 'px';
+            }
+        });
+        
+        // 可选：处理移动设备上的滚动问题
+        document.addEventListener('touchmove', function(e) {
+            // 防止父页面滚动
+            e.preventDefault();
+        }, { passive: false });
+    </script>
 </body>
 </html>
